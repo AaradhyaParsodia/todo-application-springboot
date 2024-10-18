@@ -36,7 +36,7 @@ public class TodoRepository {
         return dynamoDBMapper.query(Todo.class, queryExpression);
     }
 
-    public Todo createOrUpdateTodo(TodoInput todoInput) {
+    public Todo createOrUpdateTodo(String email, TodoInput todoInput) {
         if (todoInput == null) {
             throw new RuntimeException("TodoInput object cannot be null");
         }
@@ -46,7 +46,7 @@ public class TodoRepository {
         if (todoInput.getId() != null) {
             todo = dynamoDBMapper.load(Todo.class, todoInput.getId());
 
-            if (todo == null || !todo.getEmail().equals(todoInput.getEmail())) {
+            if (todo == null || !todo.getEmail().equals(email)) {
                 throw new RuntimeException("Todo not found or unauthorized access");
             }
         } else {
@@ -69,7 +69,12 @@ public class TodoRepository {
         }
 
         if (todoInput.getStatus() != null) {
-            todo.setStatus(todoInput.getStatus());
+            if(todoInput.getStatus().toString().equalsIgnoreCase(TodoStatus.PENDING.toString())){
+                todo.setStatus(TodoStatus.PENDING);
+            }
+            else if(todoInput.getStatus().toString().equalsIgnoreCase(TodoStatus.COMPLETED.toString())){
+                todo.setStatus(TodoStatus.COMPLETED);
+            }
         }
 
         todo.setUpdateDt();
@@ -79,8 +84,8 @@ public class TodoRepository {
         return todo;
     }
 
-    public String deleteTodo(String todoId) {
-        String email = "email@email.com";
+    public String deleteTodo(String email, String todoId) {
+//        String email = "email@email.com";
 //        Map<String, AttributeValue> map = new HashMap<>();
 //        map.put(":email", new AttributeValue(email));
 //

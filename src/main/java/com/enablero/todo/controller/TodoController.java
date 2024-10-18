@@ -3,6 +3,7 @@ package com.enablero.todo.controller;
 import com.enablero.todo.dal.entity.Todo;
 import com.enablero.todo.dal.repository.TodoRepository;
 import com.enablero.todo.model.TodoInput;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -21,17 +22,20 @@ public class TodoController {
     }
 
     @QueryMapping
-    public List<Todo> getTodos(@Argument("email") String email) {
+    public List<Todo> getTodos(HttpServletRequest request) {
+        String email = (String) request.getAttribute("userEmail");
         return todoRepository.getAllTodos(email);
     }
 
     @MutationMapping
-    public Todo createOrUpdateTodo(@Argument("input") TodoInput todo) {
-        return todoRepository.createOrUpdateTodo(todo);
+    public Todo createOrUpdateTodo(HttpServletRequest request, @Argument("input") TodoInput todo) {
+        String email = (String) request.getAttribute("userEmail");
+        return todoRepository.createOrUpdateTodo(email, todo);
     }
 
     @MutationMapping
-    public String deleteTodo(@Argument("id") String todoId) {
-        return todoRepository.deleteTodo(todoId);
+    public String deleteTodo(HttpServletRequest request, @Argument("id") String todoId) {
+        String email = (String) request.getAttribute("userEmail");
+        return todoRepository.deleteTodo(email, todoId);
     }
 }
