@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class QueryResolver {
+public class UserResolver {
 
     @Autowired
     private TodoService todoService;
@@ -18,10 +18,7 @@ public class QueryResolver {
     @Autowired
     private UserService userService;
 
-    @QueryMapping
-    public List<Todo> getTodos() {
-        return todoService.getAllTodos("aman@enablero.com");
-    }
+
 
     @QueryMapping
     public List<String> getAllowListUsers() {
