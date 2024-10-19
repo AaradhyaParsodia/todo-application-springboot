@@ -1,7 +1,7 @@
 scalar LocalDateTime
 
 type Query {
-    getTodos(email: String!): [Todo]
+    getTodos    : [Todo]
     getAllowListUsers: [String]
 }
 
