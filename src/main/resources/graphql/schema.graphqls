@@ -1,3 +1,5 @@
+#TODO Segregate Queries and Mutations
+
 scalar LocalDateTime
 
 type Query {
