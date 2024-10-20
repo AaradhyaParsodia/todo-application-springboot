@@ -27,10 +27,16 @@ public class TodoRepository {
         Map<String, AttributeValue> map = new HashMap<>();
         map.put(":email", new AttributeValue(email));
 
+        String filterExpression = "email = :email and status <> :status";
+        Map<String, AttributeValue> filterMap = new HashMap<>();
+        filterMap.put(":status", new AttributeValue("ARCHIVED"));
+
         DynamoDBQueryExpression<Todo> queryExpression = new DynamoDBQueryExpression<Todo>()
                 .withIndexName("email")
                 .withKeyConditionExpression("email = :email")
                 .withExpressionAttributeValues(map)
+                .withFilterExpression(filterExpression)
+                .withExpressionAttributeValues(filterMap)
                 .withConsistentRead(false);
 
         return dynamoDBMapper.query(Todo.class, queryExpression);

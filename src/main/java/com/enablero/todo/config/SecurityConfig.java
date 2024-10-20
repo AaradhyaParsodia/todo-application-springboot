@@ -24,6 +24,8 @@ public class SecurityConfig {
 //    @Autowired
 //    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
+//    TODO Refactor it Property to have the User Context
+
     @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
     String jwtSetURI;
 

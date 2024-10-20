@@ -13,6 +13,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DynamoDBConfig {
 
+//    TODO Read about ConfigurationProperties and club below variables in 1 model
+
     @Value("${aws.dynamodb.url}")
     private String dynamoDBUrl;
 

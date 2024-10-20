@@ -1,15 +1,14 @@
+#TODO Segregate Queries and Mutations
+
 scalar LocalDateTime
 
 type Query {
-    getTodos(email: String!): [Todo]
     getAllowListUsers: [String]
+    getTodos: [Todo]
 }
 
 type Mutation {
-#    login(email: String!): User
-
-    createOrUpdateTodo(input: TodoInput!): Todo
-#    updateTodo(input: UpdateTodoInput): Todo
+    createOrUpdateTodo(todoInput: TodoInput!): Todo
     deleteTodo(id: ID!): String
 }
 

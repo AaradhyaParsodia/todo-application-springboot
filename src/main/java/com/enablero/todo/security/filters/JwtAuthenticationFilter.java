@@ -75,6 +75,8 @@ public class JwtAuthenticationFilter implements Filter {
             JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
             jwtAuthenticationToken.setDetails(user);
 
+            System.out.println("============================"+email);
+
             filterChain.doFilter(req, res);
 
         } catch (Exception e) {
