@@ -1,7 +1,8 @@
 package com.enablero.todo.security.filters;
 
+import com.enablero.todo.dal.dataprovider.impl.UserDataProviderImpl;
 import com.enablero.todo.dal.entity.User;
-import com.enablero.todo.dal.repository.UserRepository;
+import com.enablero.todo.dal.repository.impl.UserRepositoryImpl;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +21,9 @@ import java.io.IOException;
 public class JwtAuthenticationFilter implements Filter {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserRepositoryImpl userRepositoryImpl;
+    @Autowired
+    private UserDataProviderImpl userDataProvider;
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain) throws IOException, ServletException {
@@ -55,7 +58,7 @@ public class JwtAuthenticationFilter implements Filter {
 
             String email = jwt.getClaim("email");
 
-            User user = userRepository.getUserByEmail(email);
+            User user = userDataProvider.getUserByEmail(email);
 
             if (user == null) {
 
@@ -70,10 +73,9 @@ public class JwtAuthenticationFilter implements Filter {
             }
             else {
                 request.setAttribute("userEmail", user.getEmail());
+                JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+                jwtAuthenticationToken.setDetails(user);
             }
-
-            JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-            jwtAuthenticationToken.setDetails(user);
 
             System.out.println("============================"+email);
 

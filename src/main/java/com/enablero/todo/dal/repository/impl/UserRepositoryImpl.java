@@ -1,4 +1,4 @@
-package com.enablero.todo.dal.repository;
+package com.enablero.todo.dal.repository.impl;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
@@ -6,6 +6,7 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.Condition;
 import com.enablero.todo.dal.entity.User;
+import com.enablero.todo.dal.repository.UserRepositoryInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +16,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
-public class UserRepository {
+public class UserRepositoryImpl implements UserRepositoryInterface {
 
-    private final Logger logger = LoggerFactory.getLogger(UserRepository.class);
-    private DynamoDBMapper dynamoDBMapper;
+    private final Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
+    private final DynamoDBMapper dynamoDBMapper;
 
 
     @Autowired
-    public UserRepository(DynamoDBMapper dynamoDBMapper) {
+    public UserRepositoryImpl(DynamoDBMapper dynamoDBMapper) {
         this.dynamoDBMapper = dynamoDBMapper;
     }
 
+    @Override
     public List<String> getAllowListUsers(){
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
 
@@ -43,6 +45,7 @@ public class UserRepository {
         return emails;
     }
 
+    @Override
     public User getUserByEmail(String email) {
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
         scanExpression.addFilterCondition("email", new Condition()

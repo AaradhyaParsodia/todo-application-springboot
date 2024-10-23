@@ -1,11 +1,13 @@
-package com.enablero.todo.dal.repository;
+package com.enablero.todo.dal.repository.impl;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.enablero.todo.dal.entity.Todo;
+import com.enablero.todo.dal.repository.TodoRepositoryInterface;
 import com.enablero.todo.model.TodoInput;
 import com.enablero.todo.model.TodoStatus;
+import com.enablero.todo.utlis.UserEmailContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -14,35 +16,50 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class TodoRepository {
+public class TodoRepositoryImpl implements TodoRepositoryInterface {
 
     private final DynamoDBMapper dynamoDBMapper;
 
     @Autowired
-    public TodoRepository(DynamoDBMapper dynamoDBMapper) {
+    public TodoRepositoryImpl(DynamoDBMapper dynamoDBMapper) {
         this.dynamoDBMapper = dynamoDBMapper;
     }
 
-    public List<Todo> getAllTodos(String email) {
-        Map<String, AttributeValue> map = new HashMap<>();
-        map.put(":email", new AttributeValue(email));
+    @Override
+    public List<Todo> getAllTodos() {
 
-        String filterExpression = "email = :email and status <> :status";
-        Map<String, AttributeValue> filterMap = new HashMap<>();
-        filterMap.put(":status", new AttributeValue("ARCHIVED"));
+        String email = UserEmailContext.getCurrentUserEmail();
 
+        // Define attribute values
+        Map<String, AttributeValue> attributeValues = new HashMap<>();
+        attributeValues.put(":email", new AttributeValue(email));
+        attributeValues.put(":status", new AttributeValue("ARCHIVED"));
+
+        // Define attribute names (if any)
+        Map<String, String> attributeNames = new HashMap<>();
+        attributeNames.put("#status", "status");
+
+        // Define expressions
+        String keyConditionExpression = "email = :email";
+        String filterExpression = "#status <> :status";
+
+        // Create DynamoDBQueryExpression
         DynamoDBQueryExpression<Todo> queryExpression = new DynamoDBQueryExpression<Todo>()
                 .withIndexName("email")
-                .withKeyConditionExpression("email = :email")
-                .withExpressionAttributeValues(map)
+                .withKeyConditionExpression(keyConditionExpression)
                 .withFilterExpression(filterExpression)
-                .withExpressionAttributeValues(filterMap)
+                .withExpressionAttributeValues(attributeValues)
+                .withExpressionAttributeNames(attributeNames)
                 .withConsistentRead(false);
 
         return dynamoDBMapper.query(Todo.class, queryExpression);
     }
 
-    public Todo createOrUpdateTodo(String email, TodoInput todoInput) {
+    @Override
+    public Todo createOrUpdateTodo(TodoInput todoInput) {
+
+        String email = UserEmailContext.getCurrentUserEmail();
+
         if (todoInput == null) {
             throw new RuntimeException("TodoInput object cannot be null");
         }
@@ -52,7 +69,7 @@ public class TodoRepository {
         if (todoInput.getId() != null) {
             todo = dynamoDBMapper.load(Todo.class, todoInput.getId());
 
-            if (todo == null || !todo.getEmail().equals(email)) {
+            if (todo == null || !todo.getEmail().equals(email) || todo.getStatus() == TodoStatus.ARCHIVED) {
                 throw new RuntimeException("Todo not found or unauthorized access");
             }
         } else {
@@ -62,8 +79,8 @@ public class TodoRepository {
             todo.setStatus(TodoStatus.PENDING);
         }
 
-        if (todoInput.getEmail() != null) {
-            todo.setEmail(todoInput.getEmail());
+        if (todo.getEmail() == null) {
+            todo.setEmail(email);
         }
 
         if (todoInput.getTitle() != null) {
@@ -85,12 +102,15 @@ public class TodoRepository {
 
         todo.setUpdateDt();
 
+        System.out.println(todo);
+
         dynamoDBMapper.save(todo);
 
         return todo;
     }
 
-    public String deleteTodo(String email, String todoId) {
+    @Override
+    public String deleteTodo(String todoId) {
 //        String email = "email@email.com";
 //        Map<String, AttributeValue> map = new HashMap<>();
 //        map.put(":email", new AttributeValue(email));
@@ -110,6 +130,8 @@ public class TodoRepository {
 //                .orElse(null);
 
         System.out.println("HASHDDSAJDHSAD SA");
+
+        String email = UserEmailContext.getCurrentUserEmail();
 
         Todo existingTodo = dynamoDBMapper.load(Todo.class, todoId);
 

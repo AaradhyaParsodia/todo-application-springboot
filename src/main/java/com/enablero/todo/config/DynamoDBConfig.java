@@ -6,6 +6,7 @@ import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,17 +16,24 @@ public class DynamoDBConfig {
 
 //    TODO Read about ConfigurationProperties and club below variables in 1 model
 
-    @Value("${aws.dynamodb.url}")
-    private String dynamoDBUrl;
+//    @Value("${aws.dynamodb.url}")
+//    private String dynamoDBUrl;
+//
+//    @Value("${aws.dynamodb.region}")
+//    private String awsRegion;
+//
+//    @Value("${aws.dynamodb.accessKey}")
+//    private String dynamoDBAccessKey;
+//
+//    @Value("${aws.dynamodb.secretKey}")
+//    private String dynamoDBSecretKey;
 
-    @Value("${aws.region}")
-    private String awsRegion;
+    private final DynamoDBConfigProperties dynamoDBConfigProperties;
 
-    @Value("${aws.dynamodb.accessKey}")
-    private String dynamoDBAccessKey;
-
-    @Value("${aws.dynamodb.secretKey}")
-    private String dynamoDBSecretKey;
+    @Autowired
+    public DynamoDBConfig(DynamoDBConfigProperties dynamoDBConfigProperties) {
+        this.dynamoDBConfigProperties = dynamoDBConfigProperties;
+    }
 
     @Bean
     public DynamoDBMapper dynamoDBMapper() {
@@ -36,10 +44,10 @@ public class DynamoDBConfig {
         return AmazonDynamoDBClientBuilder
                 .standard()
                 .withEndpointConfiguration(
-                        new AwsClientBuilder.EndpointConfiguration(dynamoDBUrl,awsRegion)
+                        new AwsClientBuilder.EndpointConfiguration(dynamoDBConfigProperties.getUrl(),dynamoDBConfigProperties.getRegion())
                 )
                 .withCredentials(new AWSStaticCredentialsProvider(
-                        new BasicAWSCredentials(dynamoDBAccessKey,dynamoDBSecretKey)
+                        new BasicAWSCredentials(dynamoDBConfigProperties.getAccessKey(),dynamoDBConfigProperties.getSecretKey())
                         )
                 )
                 .build();

@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.graphql.execution.RuntimeWiringConfigurer;
 
 @Configuration
-public class GraphQLConfig {
+public class GraphQLScalarConfig {
 
     //TODO Rename it. Check why it was working earlier without @Configuration
 

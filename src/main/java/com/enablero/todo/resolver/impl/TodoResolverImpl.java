@@ -1,36 +1,45 @@
-package com.enablero.todo.resolver;
+package com.enablero.todo.resolver.impl;
 
 import com.enablero.todo.dal.entity.Todo;
 import com.enablero.todo.model.TodoInput;
-import com.enablero.todo.service.TodoService;
+import com.enablero.todo.resolver.TodoResolverInterface;
+import com.enablero.todo.service.impl.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
-@Component
-public class TodoResolver {
+@Controller
+public class TodoResolverImpl implements TodoResolverInterface {
 
-//  TODO Never ever use field injection. Always use Constructor Injection. Remove @Autowired
+//  TODO-Completed Never ever use field injection. Always use Constructor Injection. Remove @Autowired
+
+
+    private final TodoService todoService;
 
     @Autowired
-    private TodoService todoService;
+    public TodoResolverImpl(TodoService todoService) {
+        this.todoService = todoService;
+    }
 
     @MutationMapping
+    @Override
     public Todo createOrUpdateTodo(@Argument("todoInput") TodoInput todo) {
         return todoService.createOrUpdateTodo(todo);
     }
 
     @QueryMapping
+    @Override
     public List<Todo> getTodos() {
-        return todoService.getAllTodos("aman@enablero.com");
+        return todoService.getAllTodos();
     }
 
     @MutationMapping
+    @Override
     public String deleteTodo(@Argument("id") String todoId) {
-        return todoService.deleteTodo("aman@enablero.com", todoId);
+        return todoService.deleteTodo(todoId);
     }
 }
