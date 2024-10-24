@@ -1,15 +1,10 @@
 package com.enablero.todo.config;
 
-//import com.enablero.todo.security.filters.JwtAuthenticationFilter;
-import jakarta.servlet.Filter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -20,11 +15,6 @@ import java.util.Arrays;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-//    @Autowired
-//    private JwtAuthenticationFilter jwtAuthenticationFilter;
-
-//    TODO Refactor it Property to have the User Context
 
     @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
     String jwtSetURI;
@@ -45,7 +35,6 @@ public class SecurityConfig {
                         jwt.jwkSetUri(jwtSetURI);
                     });
                 });
-//                .addFilterBefore(jwtAuthenticationFilter, BearerTokenAuthenticationFilter.class);
 
         return http.build();
     }

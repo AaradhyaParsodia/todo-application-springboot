@@ -30,20 +30,16 @@ public class TodoRepositoryImpl implements TodoRepositoryInterface {
 
         String email = UserEmailContext.getCurrentUserEmail();
 
-        // Define attribute values
         Map<String, AttributeValue> attributeValues = new HashMap<>();
         attributeValues.put(":email", new AttributeValue(email));
         attributeValues.put(":status", new AttributeValue("ARCHIVED"));
 
-        // Define attribute names (if any)
         Map<String, String> attributeNames = new HashMap<>();
         attributeNames.put("#status", "status");
 
-        // Define expressions
         String keyConditionExpression = "email = :email";
         String filterExpression = "#status <> :status";
 
-        // Create DynamoDBQueryExpression
         DynamoDBQueryExpression<Todo> queryExpression = new DynamoDBQueryExpression<Todo>()
                 .withIndexName("email")
                 .withKeyConditionExpression(keyConditionExpression)
@@ -111,24 +107,6 @@ public class TodoRepositoryImpl implements TodoRepositoryInterface {
 
     @Override
     public String deleteTodo(String todoId) {
-//        String email = "email@email.com";
-//        Map<String, AttributeValue> map = new HashMap<>();
-//        map.put(":email", new AttributeValue(email));
-//
-//        DynamoDBQueryExpression<Todo> queryExpression = new DynamoDBQueryExpression<Todo>()
-//                .withIndexName("email")
-//                .withKeyConditionExpression("email = :email")
-//                .withExpressionAttributeValues(map)
-//                .withConsistentRead(false);
-
-//        List<Todo> todos = dynamoDBMapper.query(Todo.class, queryExpression);
-//
-//        // Find the specific todo item by id among the results
-//        Todo existingTodo = todos.stream()
-//                .filter(todo -> todo.getId().equals(todoId))
-//                .findFirst()
-//                .orElse(null);
-
         System.out.println("HASHDDSAJDHSAD SA");
 
         String email = UserEmailContext.getCurrentUserEmail();

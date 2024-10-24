@@ -16,18 +16,6 @@ public class DynamoDBConfig {
 
 //    TODO Read about ConfigurationProperties and club below variables in 1 model
 
-//    @Value("${aws.dynamodb.url}")
-//    private String dynamoDBUrl;
-//
-//    @Value("${aws.dynamodb.region}")
-//    private String awsRegion;
-//
-//    @Value("${aws.dynamodb.accessKey}")
-//    private String dynamoDBAccessKey;
-//
-//    @Value("${aws.dynamodb.secretKey}")
-//    private String dynamoDBSecretKey;
-
     private final DynamoDBConfigProperties dynamoDBConfigProperties;
 
     @Autowired

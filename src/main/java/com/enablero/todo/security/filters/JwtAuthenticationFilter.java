@@ -20,10 +20,12 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter implements Filter {
 
+    private final UserDataProviderImpl userDataProvider;
+
     @Autowired
-    private UserRepositoryImpl userRepositoryImpl;
-    @Autowired
-    private UserDataProviderImpl userDataProvider;
+    public JwtAuthenticationFilter(UserDataProviderImpl userDataProvider) {
+        this.userDataProvider = userDataProvider;
+    }
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain) throws IOException, ServletException {
