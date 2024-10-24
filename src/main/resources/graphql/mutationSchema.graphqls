@@ -1,0 +1,11 @@
+type Mutation {
+    createOrUpdateTodo(todoInput: TodoInput!): Todo
+    deleteTodo(id: ID!): String
+}
+
+input TodoInput {
+    id: ID
+    title: String
+    description: String
+    status: String
+}
